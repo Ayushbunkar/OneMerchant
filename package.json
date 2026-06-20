@@ -1,0 +1,21 @@
+{
+  "name": "onemerchant",
+  "version": "0.1.0",
+  "private": true,
+  "description": "One Dashboard. Zero Commission. AI Powered Commerce Operating System.",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "clean": "turbo clean",
+    "dev:web": "turbo dev --filter=@onemerchant/web",
+    "dev:api": "turbo dev --filter=@onemerchant/api",
+    "dev:ai": "cd apps/ai && python -m uvicorn app.main:app --reload --port 8000",
+    "db:migrate": "turbo db:migrate --filter=@onemerchant/api",
+    "db:generate": "turbo db:generate --filter=@onemerchant/api",
+    "db:studio": "turbo db:studio --filter=@onemerchant/api",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker/docker-compose.yml down"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
