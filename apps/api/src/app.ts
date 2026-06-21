@@ -19,6 +19,7 @@ import marketingRoutes from "./modules/marketing/routes.js";
 import notificationRoutes from "./modules/notifications/routes.js";
 import mediaRoutes from "./modules/media/routes.js";
 import aiRoutes from "./modules/ai/routes.js";
+import whatsappRoutes from "./modules/whatsapp/routes.js";
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use("/api/v1/marketing", marketingRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1/ai", aiRoutes);
+app.use("/api/v1/whatsapp", whatsappRoutes);
 
 // ---- 404 Handler ----
 app.use((_req, res) => {
