@@ -1,0 +1,39 @@
+# Secrets & Environment Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+*.env
+.env*
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds & Outputs
+.next/
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# Python Cache & Virtual Environments
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+*.py[cod]
+*.pkl
+*.onnx
+
+# System & IDE folders
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
