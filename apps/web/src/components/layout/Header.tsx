@@ -1,14 +1,14 @@
 "use client";
 
 import { useUiStore } from "@/store/uiStore";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import { Menu, Bell, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export function Header() {
   const { toggleSidebar } = useUiStore();
-  const { user } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
 
   return (
     <header className="h-16 border-b bg-card/80 glass sticky top-0 z-30 flex items-center justify-between px-6">

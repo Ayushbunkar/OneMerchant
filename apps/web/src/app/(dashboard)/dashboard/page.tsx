@@ -1,62 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiClient } from "@/lib/api";
-import { formatCurrency, formatNumber } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IndianRupee, ShoppingCart, Users, Package, TrendingUp, TrendingDown } from "lucide-react";
-import dynamic from "next/dynamic";
-
-const RevenueChart = dynamic(() => import("./RevenueChart"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-full w-full bg-muted/5 animate-pulse rounded-lg flex items-center justify-center text-xs text-muted-foreground">
-      Loading chart...
-    </div>
-  ),
-});
+import { DollarSign, ShoppingCart, Users, Package, TrendingUp } from "lucide-react";
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState<any>(null);
-  const [revenueData, setRevenueData] = useState<any[]>([]);
-  const [topProducts, setTopProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [statsRes, revenueRes, productsRes] = await Promise.all([
-          apiClient.get("/analytics/dashboard"),
-          apiClient.get("/analytics/revenue?days=7"),
-          apiClient.get("/analytics/top-products?limit=5"),
-        ]);
-        setStats(statsRes.data);
-        setRevenueData(revenueRes.data);
-        setTopProducts(productsRes.data);
-      } catch (err) {
-        console.error("Failed to load dashboard data", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, []);
-
-  if (loading) {
-    return <div className="flex items-center justify-center h-full">Loading dashboard...</div>;
-  }
-
-  const StatCard = ({ title, value, icon: Icon, growth, isCurrency = false }: any) => (
-    <Card>
+  const StatCard = ({ title, value, icon: Icon, growth }: any) => (
+    <Card className="glass border-white/20 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <Icon className="h-4 w-4 text-primary" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{isCurrency ? formatCurrency(value) : formatNumber(value)}</div>
-        <p className={`text-xs flex items-center mt-1 ${growth >= 0 ? "text-green-500" : "text-red-500"}`}>
-          {growth >= 0 ? <TrendingUp className="mr-1 h-3 w-3" /> : <TrendingDown className="mr-1 h-3 w-3" />}
-          {Math.abs(growth)}% from last month
+        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-xs flex items-center mt-1 text-green-500">
+          <TrendingUp className="mr-1 h-3 w-3" />
+          {growth}% from last month
         </p>
       </CardContent>
     </Card>
@@ -65,45 +23,45 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
         <p className="text-muted-foreground">Welcome back. Here's what's happening with your store today.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Revenue" value={stats?.totalRevenue || 0} icon={IndianRupee} growth={stats?.revenueGrowth || 0} isCurrency />
-        <StatCard title="Orders" value={stats?.totalOrders || 0} icon={ShoppingCart} growth={stats?.orderGrowth || 0} />
-        <StatCard title="Customers" value={stats?.totalCustomers || 0} icon={Users} growth={stats?.customerGrowth || 0} />
-        <StatCard title="Low Stock" value={stats?.lowStockProducts || 0} icon={Package} growth={0} />
+        <StatCard title="Total Revenue" value="$45,231.89" icon={DollarSign} growth={20.1} />
+        <StatCard title="Orders" value="+2350" icon={ShoppingCart} growth={15.5} />
+        <StatCard title="Customers" value="+12,234" icon={Users} growth={10.2} />
+        <StatCard title="Total Items" value="573" icon={Package} growth={8.1} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+        <Card className="col-span-4 glass border-white/20 shadow-sm">
           <CardHeader>
-            <CardTitle>Revenue Overview (Last 7 Days)</CardTitle>
+            <CardTitle>Soft Aesthetics Overview</CardTitle>
           </CardHeader>
-          <CardContent className="pl-0 h-[300px]">
-            <RevenueChart data={revenueData} />
+          <CardContent className="h-[300px] flex items-center justify-center bg-primary/5 rounded-lg m-4">
+            <p className="text-muted-foreground">Visuals are clear, calm, and focused.</p>
           </CardContent>
         </Card>
 
-        <Card className="col-span-3">
+        <Card className="col-span-3 glass border-white/20 shadow-sm">
           <CardHeader>
-            <CardTitle>Top Products</CardTitle>
+            <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {topProducts.map((product) => (
-                <div key={product.productId} className="flex items-center justify-between">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded bg-primary/10 flex items-center justify-center">
-                      <Package className="h-4 w-4 text-primary" />
+                    <div className="h-9 w-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                      U{i}
                     </div>
                     <div>
-                      <p className="text-sm font-medium leading-none">{product.name}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{product.totalSold} sold</p>
+                      <p className="text-sm font-medium leading-none">User {i} made a purchase</p>
+                      <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
                     </div>
                   </div>
-                  <div className="font-medium text-sm">{formatCurrency(product.revenue)}</div>
+                  <div className="font-medium text-sm text-green-500">+$199.00</div>
                 </div>
               ))}
             </div>

@@ -1,63 +1,50 @@
 "use client";
 
 import { useUiStore } from "@/store/uiStore";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
-  ShoppingCart,
-  Users,
-  Truck,
-  CreditCard,
-  BarChart3,
-  Megaphone,
-  MessageSquare,
   Settings,
   LogOut,
-  Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/inventory", label: "Inventory", icon: Package },
-  { href: "/orders", label: "Orders", icon: ShoppingCart },
-  { href: "/customers", label: "Customers", icon: Users },
-  { href: "/suppliers", label: "Suppliers", icon: Truck },
-  { href: "/payments", label: "Payments", icon: CreditCard },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/marketing", label: "Marketing", icon: Megaphone },
-  { href: "/whatsapp", label: "WhatsApp", icon: MessageSquare },
-  { href: "/ai-assistant", label: "AI Assistant", icon: Bot },
+  { href: "/dashboard/items", label: "Items", icon: Package },
 ];
 
 export function Sidebar() {
   const { isSidebarOpen } = useUiStore();
-  const { tenant, logout } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
   const pathname = usePathname();
 
   if (!isSidebarOpen) return null;
 
   return (
-    <aside className="w-64 border-r bg-card glass flex flex-col h-screen fixed top-0 left-0 z-40">
+    <aside className="w-64 border-r bg-card flex flex-col h-screen fixed top-0 left-0 z-40">
       <div className="h-16 flex items-center px-6 border-b">
-        <div className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400">
+        <Link href="/" className="font-bold text-xl text-primary">
           OneMerchant
-        </div>
+        </Link>
       </div>
 
       <div className="p-4 border-b">
-        <div className="text-sm font-medium">{tenant?.name || "My Business"}</div>
-        <div className="text-xs text-muted-foreground capitalize">{tenant?.plan || "free"} Plan</div>
+        <div className="text-sm font-medium">{user?.name || "User"}</div>
+        <div className="text-xs text-muted-foreground capitalize">Welcome</div>
       </div>
 
       <div className="flex-1 overflow-y-auto py-4">
         <nav className="space-y-1 px-3">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname.startsWith(item.href);
+            // exact match for dashboard, startswith for others
+            const isActive = item.href === "/dashboard" 
+              ? pathname === "/dashboard" 
+              : pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
               <Link
@@ -66,7 +53,7 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
                   isActive
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-primary/20 text-primary"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
               >
@@ -79,13 +66,6 @@ export function Sidebar() {
       </div>
 
       <div className="p-4 border-t space-y-2">
-        <Link
-          href="/settings"
-          className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-        >
-          <Settings className="mr-3 h-5 w-5 text-muted-foreground" />
-          Settings
-        </Link>
         <button
           onClick={logout}
           className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-destructive hover:bg-destructive/10 transition-colors"
